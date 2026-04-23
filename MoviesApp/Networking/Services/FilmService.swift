@@ -7,6 +7,7 @@
 
 import Foundation
 
-protocol FilmAPIService {
+protocol FilmService {
     func fetchFilms() async throws -> [Film]
+    func fetchPerson(from URLString: String) async throws -> Person
 }

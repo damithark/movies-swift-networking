@@ -27,7 +27,7 @@ import Playgrounds
     
     do {
         let (data, response) = try await URLSession.shared.data(from: url)
-        try JSONDecoder().decode(Person.self, from: data)
+        print(try JSONDecoder().decode(Person.self, from: data))
     } catch {
         print(error)
     }

@@ -10,7 +10,7 @@ import SwiftUI
 struct FilmListView: View {
     
     // List of [Film] objects
-    @State private var filmsViewModel = FilmsViewModel()
+    var filmsViewModel = FilmsViewModel()
     
     var body: some View {
         
@@ -39,5 +39,7 @@ struct FilmListView: View {
 }
 
 #Preview {
-    FilmListView()
+    
+    @State @Previewable var vm = FilmsViewModel(service: MockFilmService())
+    FilmListView(filmsViewModel: vm)
 }

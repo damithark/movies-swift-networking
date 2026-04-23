@@ -20,8 +20,10 @@ struct Film: Codable, Identifiable, Equatable {
     let image: String
     let bannerImage: String
     
+    let people: [String]
+    
     enum CodingKeys: String, CodingKey {
-        case id, title, description, director, image, producer
+        case id, title, description, director, image, producer, people
         
         case bannerImage = "movie_banner"
         case releaseYear = "release_date"
@@ -38,7 +40,7 @@ import Playgrounds
     
     do {
         let (data, response) = try await URLSession.shared.data(from: url)
-        try JSONDecoder().decode([Film].self, from: data)
+        print(try JSONDecoder().decode([Film].self, from: data))
     } catch {
         print(error)
     }

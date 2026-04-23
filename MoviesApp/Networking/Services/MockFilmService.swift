@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MockFilmAPIService: FilmAPIService {
+struct MockFilmService: FilmService {
     
     private struct SampleData: Decodable {
         let films: [Film]
@@ -32,5 +32,10 @@ struct MockFilmAPIService: FilmAPIService {
         
         let data = try await loadSampleData()
         return data.films
+    }
+    
+    func fetchPerson(from URLString: String) async throws -> Person {
+        let data = try await loadSampleData()
+        return data.people.first!
     }
 }
