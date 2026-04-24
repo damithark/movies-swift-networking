@@ -28,8 +28,8 @@ struct MockFilmService: FilmService {
         }
     }
     
+    //MARK: - Protocol conformance
     func fetchFilms() async throws -> [Film] {
-        
         let data = try await loadSampleData()
         return data.films
     }
@@ -38,4 +38,5 @@ struct MockFilmService: FilmService {
         let data = try await loadSampleData()
         return data.people.first!
     }
+    
 }
