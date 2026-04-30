@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@Observable
 class FilmDetailsViewModel {
     
     enum State: Equatable {
@@ -19,7 +20,7 @@ class FilmDetailsViewModel {
     
     var state: State = .idle
     
-    let service: FilmService
+    private let service: FilmService
     
     init(service: FilmService = DefaultFilmService()) {
         self.service = service
@@ -29,7 +30,6 @@ class FilmDetailsViewModel {
         
         guard state != .loading else { return }
         state = .loading
-        
         var loadedPeople: [Person] = []
         
         do {

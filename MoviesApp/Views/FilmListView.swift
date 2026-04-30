@@ -13,7 +13,6 @@ struct FilmListView: View {
     var filmsViewModel = FilmsViewModel()
     
     var body: some View {
-        
         NavigationStack {
             switch filmsViewModel.state {
             case .idle:
@@ -23,8 +22,21 @@ struct FilmListView: View {
                     Text("Loading films list...")
                 }
             case .loaded(let films) :
-                List(films) {
-                    Text($0.title)
+                List(films) { selectedFilm in
+                    NavigationLink(value: selectedFilm) {
+                        HStack {
+                            FilmBannerImageView(urlPath: selectedFilm.image)
+                                .frame(width: 80, height: 150)
+                                .scaledToFit()
+                                .padding(.horizontal)
+                                .cornerRadius(10)
+                            Text(selectedFilm.title)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                }
+                .navigationDestination(for: Film.self) { film in
+                    FilmDetailsView(film: film)
                 }
             case .error(let error):
                 Text(error)

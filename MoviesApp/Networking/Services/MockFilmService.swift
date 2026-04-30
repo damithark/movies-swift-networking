@@ -14,7 +14,7 @@ struct MockFilmService: FilmService {
         let people: [Person]
     }
     
-    private func loadSampleData() async throws -> SampleData {
+    private func loadSampleData() throws -> SampleData {
         guard let url = Bundle.main.url(forResource: "SampleData", withExtension: "json") else {
             throw APIError.invalidURL
         }
@@ -30,13 +30,19 @@ struct MockFilmService: FilmService {
     
     //MARK: - Protocol conformance
     func fetchFilms() async throws -> [Film] {
-        let data = try await loadSampleData()
+        let data = try loadSampleData()
         return data.films
     }
     
     func fetchPerson(from URLString: String) async throws -> Person {
-        let data = try await loadSampleData()
+        let data = try loadSampleData()
         return data.people.first!
+    }
+    
+    //MARK: - Preview/Testing only
+    func fetchFilm() -> Film {
+        let data = try! loadSampleData()
+        return data.films.first!
     }
     
 }

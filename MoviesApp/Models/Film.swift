@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Film: Codable, Identifiable, Equatable {
+struct Film: Codable, Identifiable, Equatable, Hashable {
     let id: String
     let title: String
     let description: String
@@ -29,6 +29,11 @@ struct Film: Codable, Identifiable, Equatable {
         case releaseYear = "release_date"
         case duration = "running_time"
         case score = "rt_score"
+    }
+    
+    //MARK: Preview
+    static var example: Film {
+        MockFilmService().fetchFilm()
     }
 }
 
