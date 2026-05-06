@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 class FilmDetailsViewModel {
     
@@ -27,16 +28,23 @@ class FilmDetailsViewModel {
     }
     
     func fetch(for film: Film) async {
-        
+
         guard state != .loading else { return }
         state = .loading
         var loadedPeople: [Person] = []
-        
+
+        // Capture service as a local constant so the addTask closure below
+        // does not capture self (a @MainActor type). Without this, Swift
+        // makes every child task @MainActor-isolated, forcing all network
+        // calls to serialise on the main thread. With a local capture the
+        // closures are non-isolated and run concurrently on background threads.
+        let service = self.service
+
         do {
             try await withThrowingTaskGroup(of: Person.self) { group in
                 for personInfoURL in film.people {
                     group.addTask {
-                        try await self.service.fetchPerson(from: personInfoURL)
+                        try await service.fetchPerson(from: personInfoURL)
                     }
                 }
                 // Collect results as they completed from the task group

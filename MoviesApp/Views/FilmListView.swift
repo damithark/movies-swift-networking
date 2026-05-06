@@ -10,7 +10,7 @@ import SwiftUI
 struct FilmListView: View {
     
     // List of [Film] objects
-    var filmsViewModel = FilmsViewModel()
+    @State var filmsViewModel = FilmsViewModel()
     
     var body: some View {
         NavigationStack {

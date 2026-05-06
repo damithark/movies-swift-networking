@@ -7,7 +7,6 @@
 
 import Foundation
 
-@MainActor
 protocol FilmService: Sendable {
     func fetchFilms() async throws -> [Film]
     func fetchPerson(from URLString: String) async throws -> Person
