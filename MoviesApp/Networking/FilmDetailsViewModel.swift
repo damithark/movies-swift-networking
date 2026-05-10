@@ -31,34 +31,24 @@ class FilmDetailsViewModel {
 
         guard state != .loading else { return }
         state = .loading
-        var loadedPeople: [Person] = []
-
-        // Capture service as a local constant so the addTask closure below
-        // does not capture self (a @MainActor type). Without this, Swift
-        // makes every child task @MainActor-isolated, forcing all network
-        // calls to serialise on the main thread. With a local capture the
-        // closures are non-isolated and run concurrently on background threads.
-        let service = self.service
 
         do {
-            try await withThrowingTaskGroup(of: Person.self) { group in
-                for personInfoURL in film.people {
-                    group.addTask {
-                        try await service.fetchPerson(from: personInfoURL)
-                    }
-                }
-                // Collect results as they completed from the task group
-                for try await person in group {
-                    loadedPeople.append(person)
-                }
+            // Fetch each person sequentially. Because fetchPerson(from:) is a
+            // non-isolated async function, every `await` here hops the work
+            // OFF the main actor onto a background thread for the duration of
+            // the network request, then hops back to update state. This keeps
+            // the main thread free and the UI responsive throughout.
+            var loadedPeople: [Person] = []
+            for personURL in film.people {
+                let person = try await service.fetchPerson(from: personURL)
+                loadedPeople.append(person)
             }
-            
             state = .loaded(loadedPeople)
-            
+
         } catch let error as APIError {
-            self.state = .error(error.errorDescription ?? "Unknown error")
+            state = .error(error.errorDescription ?? "Unknown error")
         } catch {
-            self.state = .error("An unexpected error occurred. Please try again later. If the problem persists, please contact support at support@seer99.com")
+            state = .error("An unexpected error occurred. Please try again later.")
         }
     }
 }
